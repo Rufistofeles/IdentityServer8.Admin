@@ -396,38 +396,87 @@ namespace IdentityServer8.STS.Identity.Controllers
         {
             if (remoteError != null)
             {
+                ////ErrorMessage = $"Error from external provider: {remoteError}";
                 ModelState.AddModelError(string.Empty, _localizer["ErrorExternalProvider", remoteError]);
-
-                return View(nameof(Login));
+                return RedirectToAction(nameof(Login));
             }
-            var info = await _signInManager.GetExternalLoginInfoAsync();
+            var info = await _signInManager.GetExternalLoginInfoAsync("Saml2");
             if (info == null)
             {
                 return RedirectToAction(nameof(Login));
             }
 
             // Sign in the user with this external login provider if the user already has a login.
-            var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false);
+            var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false, bypassTwoFactor: true);
             if (result.Succeeded)
             {
-                return RedirectToLocal(returnUrl);
-            }
-            if (result.RequiresTwoFactor)
-            {
-                return RedirectToAction(nameof(LoginWith2fa), new { ReturnUrl = returnUrl });
+                var user = await _userManager.FindByLoginAsync(info.LoginProvider, info.ProviderKey);
+
+                await _userManager.AddClaimAsync(user, new Claim(ClaimTypes.Email, info.ProviderKey));
+                await _userManager.AddClaimAsync(user, new Claim(JwtClaimTypes.Subject, info.ProviderKey));
+                await _userManager.UpdateAsync(user);
+
+                _logger.LogInformation("User logged in with {Name} provider.", info.LoginProvider);
+                // check if we are in the context of an authorization request
+                //var context = await _interaction.GetAuthorizationContextAsync(model.ReturnUrl);
+                returnUrl = info.AuthenticationProperties.Items.Where(x => x.Key == "returnUrl").Select(x => x.Value).FirstOrDefault();
+                if (returnUrl == "")
+                {
+                    return RedirectToLocal(returnUrl);
+                }
+                else
+                {
+                    return Redirect(returnUrl);
+                }
+
             }
             if (result.IsLockedOut)
             {
                 return View("Lockout");
             }
+            else
+            {
+                // If the user does not have an account, then ask the user to create an account.
+                ViewData["ReturnUrl"] = returnUrl;
+                ViewData["LoginProvider"] = info.LoginProvider;
+                var email = info.Principal.FindFirstValue(ClaimTypes.Email);
+                return View("ExternalLoginConfirmation", new ExternalLoginConfirmationViewModel { Email = email, UserName = email });
+            }
 
-            // If the user does not have an account, then ask the user to create an account.
-            ViewData["ReturnUrl"] = returnUrl;
-            ViewData["LoginProvider"] = info.LoginProvider;
-            var email = info.Principal.FindFirstValue(ClaimTypes.Email);
-            var userName = info.Principal.Identity.Name;
+            ////if (remoteError != null)
+            ////{
+            ////    ModelState.AddModelError(string.Empty, _localizer["ErrorExternalProvider", remoteError]);
 
-            return View("ExternalLoginConfirmation", new ExternalLoginConfirmationViewModel { Email = email, UserName = userName });
+            ////    return View(nameof(Login));
+            ////}
+            ////var info = await _signInManager.GetExternalLoginInfoAsync();
+            ////if (info == null)
+            ////{
+            ////    return RedirectToAction(nameof(Login));
+            ////}
+
+            ////// Sign in the user with this external login provider if the user already has a login.
+            ////var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false);
+            ////if (result.Succeeded)
+            ////{
+            ////    return RedirectToLocal(returnUrl);
+            ////}
+            ////if (result.RequiresTwoFactor)
+            ////{
+            ////    return RedirectToAction(nameof(LoginWith2fa), new { ReturnUrl = returnUrl });
+            ////}
+            ////if (result.IsLockedOut)
+            ////{
+            ////    return View("Lockout");
+            ////}
+
+            ////// If the user does not have an account, then ask the user to create an account.
+            ////ViewData["ReturnUrl"] = returnUrl;
+            ////ViewData["LoginProvider"] = info.LoginProvider;
+            ////var email = info.Principal.FindFirstValue(ClaimTypes.Email);
+            ////var userName = info.Principal.Identity.Name;
+
+            ////return View("ExternalLoginConfirmation", new ExternalLoginConfirmationViewModel { Email = email, UserName = userName });
         }
 
         [HttpPost]
@@ -435,11 +484,36 @@ namespace IdentityServer8.STS.Identity.Controllers
         [AllowAnonymous]
         public IActionResult ExternalLogin(string provider, string returnUrl = null)
         {
-            // Request a redirect to the external login provider.
-            var redirectUrl = Url.Action("ExternalLoginCallback", "Account", new { ReturnUrl = returnUrl });
-            var properties = _signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl);
+            if (provider == "Saml2")
+            {
+                // start challenge and roundtrip the return URL and 
+                var props = new AuthenticationProperties()
+                {
+                    RedirectUri = Url.Action("ExternalLoginCallback"),
+                    Items =
+                    {
+                        { "returnUrl", returnUrl },
+                        { "provider", provider },
+                        { "scheme", provider },
 
-            return Challenge(properties, provider);
+                    }
+                };
+                return Challenge(props, provider);
+            }
+            else
+            {
+                // Request a redirect to the external login provider.
+                var redirectUrl = Url.Action("ExternalLoginCallback", "Account", new { ReturnUrl = returnUrl });
+                var properties = _signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl);
+
+                return Challenge(properties, provider);
+            }
+
+            ////// Request a redirect to the external login provider.
+            ////var redirectUrl = Url.Action("ExternalLoginCallback", "Account", new { ReturnUrl = returnUrl });
+            ////var properties = _signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl);
+
+            ////return Challenge(properties, provider);
         }
 
         [HttpPost]
@@ -457,27 +531,67 @@ namespace IdentityServer8.STS.Identity.Controllers
             }
 
             if (ModelState.IsValid)
-            {
-                var user = new TUser
-                {
-                    UserName = model.UserName,
-                    Email = model.Email
-                };
+			{
+				// Busca al usuario por email
+				var existingUser = await _userManager.FindByEmailAsync(model.Email);
+				IdentityResult result;
 
-                var result = await _userManager.CreateAsync(user);
-                if (result.Succeeded)
-                {
-                    result = await _userManager.AddLoginAsync(user, info);
-                    if (result.Succeeded)
-                    {
-                        await _signInManager.SignInAsync(user, isPersistent: false);
+				if (existingUser != null)
+				{
+					// El usuario ya existe, agregar solo el login externo
+					result = await _userManager.AddLoginAsync(existingUser, info);
+					if (result.Succeeded)
+					{
+						await _signInManager.SignInAsync(existingUser, isPersistent: false);
+						return RedirectToLocal(returnUrl);
+					}
+				}
+				else
+				{
+					// Crear un nuevo usuario porque no existe
+					var user = new TUser
+					{
+						UserName = model.UserName,
+						Email = model.UserName
+					};
 
-                        return RedirectToLocal(returnUrl);
-                    }
-                }
+					result = await _userManager.CreateAsync(user);
+					if (result.Succeeded)
+					{
+						result = await _userManager.AddLoginAsync(user, info);
+						if (result.Succeeded)
+						{
+							await _signInManager.SignInAsync(user, isPersistent: false);
+							return RedirectToLocal(returnUrl);
+						}
+					}
+				}
 
-                AddErrors(result);
-            }
+				AddErrors(result);
+			}
+
+            ////if (ModelState.IsValid)
+            ////{
+            ////    var user = new TUser
+            ////    {
+            ////        UserName = model.UserName,
+            ////        Email = model.Email
+            ////    };
+
+            ////    var result = await _userManager.CreateAsync(user);
+            ////    if (result.Succeeded)
+            ////    {
+            ////        result = await _userManager.AddLoginAsync(user, info);
+            ////        if (result.Succeeded)
+            ////        {
+            ////            await _signInManager.SignInAsync(user, isPersistent: false);
+
+            ////            return RedirectToLocal(returnUrl);
+            ////        }
+            ////    }
+
+            ////    AddErrors(result);
+            ////}
 
             ViewData["LoginProvider"] = info.LoginProvider;
             ViewData["ReturnUrl"] = returnUrl;
@@ -708,6 +822,7 @@ namespace IdentityServer8.STS.Identity.Controllers
 
         private async Task<LoginViewModel> BuildLoginViewModelAsync(string returnUrl)
         {
+            string company = "";
             var context = await _interaction.GetAuthorizationContextAsync(returnUrl);
             if (context?.IdP != null && await _schemeProvider.GetSchemeAsync(context.IdP) != null)
             {
@@ -745,6 +860,7 @@ namespace IdentityServer8.STS.Identity.Controllers
                 var client = await _clientStore.FindEnabledClientByIdAsync(context.Client.ClientId);
                 if (client != null)
                 {
+                    company = client.ClientName;
                     allowLocal = client.EnableLocalLogin;
 
                     if (client.IdentityProviderRestrictions != null && client.IdentityProviderRestrictions.Any())
@@ -760,7 +876,8 @@ namespace IdentityServer8.STS.Identity.Controllers
                 EnableLocalLogin = allowLocal && AccountOptions.AllowLocalLogin,
                 ReturnUrl = returnUrl,
                 Username = context?.LoginHint,
-                ExternalProviders = providers.ToArray()
+                ExternalProviders = providers.ToArray(),
+                Company = company,
             };
         }
 

@@ -12,12 +12,25 @@
 
 */
 
-using System;
-using System.Collections.Generic;
-using System.Globalization;
+using IdentityServer8.Admin.EntityFramework.Configuration.Configuration;
+using IdentityServer8.Admin.EntityFramework.Configuration.MySql;
+using IdentityServer8.Admin.EntityFramework.Configuration.PostgreSQL;
+using IdentityServer8.Admin.EntityFramework.Configuration.SqlServer;
+using IdentityServer8.Admin.EntityFramework.Helpers;
+using IdentityServer8.Admin.EntityFramework.Interfaces;
+using IdentityServer8.Configuration;
 using IdentityServer8.EntityFramework.Storage;
+using IdentityServer8.Shared.Configuration.Authentication;
+using IdentityServer8.Shared.Configuration.Configuration.Identity;
+using IdentityServer8.STS.Identity.Configuration;
+using IdentityServer8.STS.Identity.Configuration.ApplicationParts;
+using IdentityServer8.STS.Identity.Configuration.Constants;
+using IdentityServer8.STS.Identity.Configuration.Interfaces;
+using IdentityServer8.STS.Identity.Helpers.Localization;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.DataProtection.EntityFrameworkCore;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
@@ -27,24 +40,19 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
-using IdentityServer8.STS.Identity.Configuration;
-using IdentityServer8.STS.Identity.Configuration.ApplicationParts;
-using IdentityServer8.STS.Identity.Configuration.Constants;
-using IdentityServer8.STS.Identity.Configuration.Interfaces;
-using IdentityServer8.STS.Identity.Helpers.Localization;
-using System.Linq;
-using IdentityServer8.Configuration;
-using IdentityServer8.Admin.EntityFramework.Interfaces;
-using IdentityServer8.Admin.EntityFramework.Helpers;
-using Microsoft.AspNetCore.DataProtection.EntityFrameworkCore;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Identity.Web;
-using IdentityServer8.Admin.EntityFramework.Configuration.Configuration;
-using IdentityServer8.Admin.EntityFramework.Configuration.MySql;
-using IdentityServer8.Admin.EntityFramework.Configuration.PostgreSQL;
-using IdentityServer8.Admin.EntityFramework.Configuration.SqlServer;
-using IdentityServer8.Shared.Configuration.Authentication;
-using IdentityServer8.Shared.Configuration.Configuration.Identity;
+using Org.BouncyCastle.Crypto.Parameters;
+using Org.BouncyCastle.Pkcs;
+using Org.BouncyCastle.Security;
+using Sustainsys.Saml2;
+using Sustainsys.Saml2.Metadata;
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Security.Cryptography;
+using System.Security.Cryptography.X509Certificates;
 
 namespace IdentityServer8.STS.Identity.Helpers
 {
@@ -414,6 +422,24 @@ namespace IdentityServer8.STS.Identity.Helpers
                     options.CallbackPath = externalProviderConfiguration.AzureAdCallbackPath;
                 },  cookieScheme: null);
             }
+
+            if (externalProviderConfiguration.UseAzureAdSaml2Provider)
+            {
+                authenticationBuilder.AddSaml2(options =>
+                {
+                    options.SPOptions.EntityId = new EntityId(externalProviderConfiguration.SamlLocalEntityId);
+                    options.SPOptions.ModulePath = externalProviderConfiguration.SamlModulePath;
+                    options.IdentityProviders.Add(
+                        new IdentityProvider(
+                            new EntityId(externalProviderConfiguration.SamlAzureEntityId), options.SPOptions)
+                        {
+                            MetadataLocation = externalProviderConfiguration.SamlMetadata,
+                            LoadMetadata = true
+                        });
+                    options.SPOptions.ServiceCertificates.Add(WorkaroundLoadingNoPasswordCertificate(configuration));
+                }
+                );
+            }
         }
 
         /// <summary>
@@ -504,6 +530,32 @@ namespace IdentityServer8.STS.Identity.Helpers
                         throw new NotImplementedException($"Health checks not defined for database provider {databaseProvider.ProviderType}");
                 }
             }
+        }
+
+        public static X509Certificate2 WorkaroundLoadingNoPasswordCertificate(IConfiguration config)
+        {
+            Pkcs12Store store = new();
+
+            var cerBase64 = config["ExternalProvidersConfiguration:CertificateBase64"];
+            byte[] cerBytes = Convert.FromBase64String(cerBase64);
+            using Stream stream = new MemoryStream(cerBytes);
+            store.Load(stream, []);
+
+            var keyAlias = store.Aliases.Cast<string>().SingleOrDefault(a => store.IsKeyEntry(a));
+
+            var key = (RsaPrivateCrtKeyParameters) store.GetKey(keyAlias).Key;
+            var bouncyCertificate = store.GetCertificate(keyAlias).Certificate;
+
+            var certificate = new X509Certificate2(DotNetUtilities.ToX509Certificate(bouncyCertificate));
+            var parameters = DotNetUtilities.ToRSAParameters(key);
+
+            using (RSACryptoServiceProvider rsa = new(2048))
+            {
+                rsa.ImportParameters(parameters);
+                certificate = RSACertificateExtensions.CopyWithPrivateKey(certificate, rsa);
+            }
+
+            return certificate;
         }
     }
 }

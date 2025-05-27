@@ -31,6 +31,7 @@
 		<PackageReference Include="Microsoft.AspNetCore.Identity.UI" />
 		<PackageReference Include="HigginsSoft.IdentityServer8.AspNetIdentity" />
 		<PackageReference Include="HigginsSoft.IdentityServer8.EntityFramework" />
+		<PackageReference Include="Portable.BouncyCastle" />
 		<PackageReference Include="Serilog" />
 		<PackageReference Include="Serilog.Enrichers.Environment" />
 		<PackageReference Include="Serilog.Enrichers.Thread" />

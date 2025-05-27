@@ -1,0 +1,33 @@
+<script>
+    $(document).ready(function () {
+
+        var nm = @(TempData["Message"]!=null? Html.Raw(TempData["Message"]) : Html.Raw("undefined"));
+        if(nm){
+            showNotification(nm.msgtype, nm.title, nm.msg, nm.delay);
+        }
+    });
+    //console.log(nm);
+
+    function showNotification(msgtype, title, msg, delay = 0) {
+
+        let icon = null;
+        switch (msgtype) {
+            case "warning":
+                new AWN().warning(msg, {durations: {warning: delay}, labels: {warning: title}})
+                break;
+            case "info":
+                new AWN().tip(msg, {durations: {tip: delay}, labels: {tip: title}})
+                break;
+            case "error":
+                new AWN().alert(msg, {durations: {alert: delay}, labels: {alert: title}})
+                break;
+            case "success":
+                new AWN().success(msg, {durations: {success: delay}, labels: {success: title}})
+                break;
+            default:
+                new AWN().tip(msg, {durations: {tip: delay}, labels: {tip: title}})
+                break
+        }
+    }
+
+</script>
