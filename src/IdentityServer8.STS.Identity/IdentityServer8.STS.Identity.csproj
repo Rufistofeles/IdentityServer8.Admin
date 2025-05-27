@@ -28,20 +28,22 @@
 		<PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" />
 		<PackageReference Include="Microsoft.Identity.Web" />
 		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" />
-		<PackageReference Include="Microsoft.AspNetCore.Identity.UI"  />
-		<PackageReference Include="HigginsSoft.IdentityServer8.AspNetIdentity"  />
-		<PackageReference Include="HigginsSoft.IdentityServer8.EntityFramework"  />
+		<PackageReference Include="Microsoft.AspNetCore.Identity.UI" />
+		<PackageReference Include="HigginsSoft.IdentityServer8.AspNetIdentity" />
+		<PackageReference Include="HigginsSoft.IdentityServer8.EntityFramework" />
 		<PackageReference Include="Serilog" />
-		<PackageReference Include="Serilog.Enrichers.Environment"  />
+		<PackageReference Include="Serilog.Enrichers.Environment" />
 		<PackageReference Include="Serilog.Enrichers.Thread" />
-		<PackageReference Include="Serilog.Extensions.Hosting"  />
-		<PackageReference Include="Serilog.Settings.Configuration"  />
+		<PackageReference Include="Serilog.Extensions.Hosting" />
+		<PackageReference Include="Serilog.Settings.Configuration" />
 		<PackageReference Include="Serilog.Sinks.Console" />
-		<PackageReference Include="Serilog.Sinks.File"  />
+		<PackageReference Include="Serilog.Sinks.File" />
 		<PackageReference Include="Serilog.Sinks.MSSqlServer" />
-		<PackageReference Include="Serilog.Sinks.Seq"  />
+		<PackageReference Include="Serilog.Sinks.Seq" />
 		<PackageReference Include="Skoruba.AuditLogging.EntityFramework" />
 		<PackageReference Include="NWebsec.AspNetCore.Middleware" />
+		<PackageReference Include="Sustainsys.Saml2" />
+		<PackageReference Include="Sustainsys.Saml2.AspNetCore2" />
 	</ItemGroup>
 
 	<ItemGroup>
