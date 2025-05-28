@@ -400,14 +400,16 @@ namespace IdentityServer8.STS.Identity.Controllers
                 ModelState.AddModelError(string.Empty, _localizer["ErrorExternalProvider", remoteError]);
                 return RedirectToAction(nameof(Login));
             }
+            
             var info = await _signInManager.GetExternalLoginInfoAsync("Saml2");
+                        
             if (info == null)
             {
                 return RedirectToAction(nameof(Login));
             }
 
             // Sign in the user with this external login provider if the user already has a login.
-            var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false, bypassTwoFactor: true);
+            var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false);
             if (result.Succeeded)
             {
                 var user = await _userManager.FindByLoginAsync(info.LoginProvider, info.ProviderKey);
@@ -524,7 +526,7 @@ namespace IdentityServer8.STS.Identity.Controllers
             returnUrl = returnUrl ?? Url.Content("~/");
 
             // Get the information about the user from the external login provider
-            var info = await _signInManager.GetExternalLoginInfoAsync();
+            var info = await _signInManager.GetExternalLoginInfoAsync(model.Provider);
             if (info == null)
             {
                 return View("ExternalLoginFailure");

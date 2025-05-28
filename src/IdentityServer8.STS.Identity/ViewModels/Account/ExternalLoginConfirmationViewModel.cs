@@ -25,5 +25,7 @@ namespace IdentityServer8.STS.Identity.ViewModels.Account
         [Required]
         [EmailAddress]
         public string Email { get; set; }
+
+        public string Provider { get; set; }
     }
 }
