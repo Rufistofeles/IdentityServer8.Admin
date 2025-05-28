@@ -1,4 +1,4 @@
-﻿{
+{
     "IdentityServerData": {
         "IdentityResources": [
             {
@@ -63,8 +63,8 @@
         ],
         "ApiScopes": [
             {
-                "Name": "higginssoft_identity_admin_api",
-                "DisplayName": "higginssoft_identity_admin_api",
+                "Name": "identity_admin_api",
+                "DisplayName": "identity_admin_api",
                 "Required": true,
                 "UserClaims": [
                     "role",
@@ -74,16 +74,16 @@
         ],
         "ApiResources": [
             {
-                "Name": "higginssoft_identity_admin_api",
+                "Name": "identity_admin_api",
                 "Scopes": [
-                    "higginssoft_identity_admin_api"
+                    "identity_admin_api"
                 ]
             }
         ],
         "Clients": [
             {
-                "ClientId": "higginssoft_identity_admin",
-                "ClientName": "higginssoft_identity_admin",
+                "ClientId": "identity_admin",
+                "ClientName": "identity_admin",
                 "ClientUri": "https://localhost:44303",
                 "AllowedGrantTypes": [
                     "authorization_code"
@@ -91,7 +91,7 @@
                 "RequirePkce": true,
                 "ClientSecrets": [
                     {
-                        "Value": "higginssoft_admin_client_secret"
+                        "Value": "identity_admin_client_secret"
                     }
                 ],
                 "RedirectUris": [
@@ -112,8 +112,8 @@
                 ]
             },
             {
-                "ClientId": "higginssoft_identity_admin_api_swaggerui",
-                "ClientName": "higginssoft_identity_admin_api_swaggerui",
+                "ClientId": "identity_admin_api_swaggerui",
+                "ClientName": "identity_admin_api_swaggerui",
                 "AllowedGrantTypes": [
                     "authorization_code"
                 ],
@@ -123,7 +123,7 @@
                     "https://localhost:44302/swagger/oauth2-redirect.html"
                 ],
                 "AllowedScopes": [
-                    "higginssoft_identity_admin_api"
+                    "identity_admin_api"
                 ],
                 "AllowedCorsOrigins": [
                     "https://localhost:44302"

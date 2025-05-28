@@ -1,4 +1,4 @@
-﻿{
+{
     "Serilog": {
         "MinimumLevel": {
             "Default": "Error",
@@ -13,14 +13,14 @@
             {
                 "Name": "File",
                 "Args": {
-                    "path": "Log/higginssoft_admin.txt",
+                    "path": "Log/Identity_admin.txt",
                     "rollingInterval": "Day"
                 }
             },
             {
                 "Name": "MSSqlServer",
                 "Args": {
-                    "connectionString": "Server=(localdb)\\mssqllocaldb;Database=IdentityServer8Admin;Trusted_Connection=True;MultipleActiveResultSets=true",
+                    "connectionString": "Server=sql.domoapps.mx;Database=IdsKavAdmin;persist security info=True;user id=sa;password=eOO14$BB76n0;TrustServerCertificate=true;MultipleActiveResultSets=True;App=EntityFramework",
                     "tableName": "Log",
                     "columnOptionsSection": {
                         "addStandardColumns": [ "LogEvent" ],

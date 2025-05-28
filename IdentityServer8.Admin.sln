@@ -4,8 +4,6 @@ VisualStudioVersion = 17.8.34322.80
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "admin", "admin", "{588205D4-3A30-4DA4-849D-C7422C396DAA}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{0BC0CC4E-A0F1-45E8-B41A-AE0FA76BF3E5}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityServer8.Admin", "src\IdentityServer8.Admin\IdentityServer8.Admin.csproj", "{E3713598-3375-4E81-9EC7-58DC090789BD}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sts", "sts", "{63D44665-AC4C-45F4-A2C7-A7DB394F44C4}"
@@ -46,49 +44,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityServer8.Admin.Entit
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityServer8.Shared.Configuration", "src\IdentityServer8.Shared.Configuration\IdentityServer8.Shared.Configuration.csproj", "{D49A2D61-AEEB-457C-B3BA-D1322EB2F4EC}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Files", "Solution Files", "{6C40BE8B-71E6-4B9E-880D-48F91D0733C8}"
-	ProjectSection(SolutionItems) = preProject
-		Directory.Build.props = Directory.Build.props
-		Directory.Build.targets = Directory.Build.targets
-		Directory.Packages.props = Directory.Packages.props
-		global.json = global.json
-		IdentityServer8.Admin.sln.licenseheader = IdentityServer8.Admin.sln.licenseheader
-		IdentityServer8.DotNet.ruleset = IdentityServer8.DotNet.ruleset
-		LICENSE = LICENSE
-		LICENSE.md = LICENSE.md
-		Nuget.Config = Nuget.Config
-		README.md = README.md
-		SECURITY.MD = SECURITY.MD
-		SPONSORS.md = SPONSORS.md
-		version.json = version.json
-	EndProjectSection
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityServer8.Admin.Api.IntegrationTests", "src\IdentityServer8.Admin.Api.IntegrationTests\IdentityServer8.Admin.Api.IntegrationTests.csproj", "{C05451A2-CC77-4BCC-BD15-9F6CB2FD2EC2}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityServer8.Admin.IntegrationTests", "src\IdentityServer8.Admin.IntegrationTests\IdentityServer8.Admin.IntegrationTests.csproj", "{077541F6-22DC-4681-A330-46E652F46FAD}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityServer8.Admin.UnitTests", "src\IdentityServer8.Admin.UnitTests\IdentityServer8.Admin.UnitTests.csproj", "{B4222224-6279-4047-9F5A-95637B24EB05}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityServer8.STS.Identity.IntegrationTests", "src\IdentityServer8.STS.Identity.IntegrationTests\IdentityServer8.STS.Identity.IntegrationTests.csproj", "{B5654737-8A3E-48AF-A8E1-BE461BAAEAF9}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{A7171FEC-FEC1-4AF0-9625-E69D93F08A42}"
-	ProjectSection(SolutionItems) = preProject
-		.github\CONTRIBUTING.md = .github\CONTRIBUTING.md
-		.github\dependabot.yml = .github\dependabot.yml
-		.github\FUNDING.yml = .github\FUNDING.yml
-		.github\PULL_REQUEST_TEMPLATE.md = .github\PULL_REQUEST_TEMPLATE.md
-	EndProjectSection
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "issuetemplate", "issuetemplate", "{0BC5E76A-A280-49C8-8E96-A43FEA357A4B}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{C5474352-0715-41C0-92C2-BABA1A4103A0}"
-	ProjectSection(SolutionItems) = preProject
-		.github\workflows\codeql.yml = .github\workflows\codeql.yml
-		.github\workflows\develop.yml = .github\workflows\develop.yml
-		.github\workflows\master.yml = .github\workflows\master.yml
-		.github\workflows\pre-release.yml = .github\workflows\pre-release.yml
-		.github\workflows\release.yml = .github\workflows\release.yml
-	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -164,22 +120,6 @@ Global
 		{D49A2D61-AEEB-457C-B3BA-D1322EB2F4EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D49A2D61-AEEB-457C-B3BA-D1322EB2F4EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D49A2D61-AEEB-457C-B3BA-D1322EB2F4EC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C05451A2-CC77-4BCC-BD15-9F6CB2FD2EC2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C05451A2-CC77-4BCC-BD15-9F6CB2FD2EC2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C05451A2-CC77-4BCC-BD15-9F6CB2FD2EC2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C05451A2-CC77-4BCC-BD15-9F6CB2FD2EC2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{077541F6-22DC-4681-A330-46E652F46FAD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{077541F6-22DC-4681-A330-46E652F46FAD}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{077541F6-22DC-4681-A330-46E652F46FAD}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{077541F6-22DC-4681-A330-46E652F46FAD}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B4222224-6279-4047-9F5A-95637B24EB05}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B4222224-6279-4047-9F5A-95637B24EB05}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B4222224-6279-4047-9F5A-95637B24EB05}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B4222224-6279-4047-9F5A-95637B24EB05}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B5654737-8A3E-48AF-A8E1-BE461BAAEAF9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B5654737-8A3E-48AF-A8E1-BE461BAAEAF9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B5654737-8A3E-48AF-A8E1-BE461BAAEAF9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B5654737-8A3E-48AF-A8E1-BE461BAAEAF9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -202,12 +142,6 @@ Global
 		{6DD24C2C-0FB5-4C37-8B42-5DACA0FDE4EC} = {588205D4-3A30-4DA4-849D-C7422C396DAA}
 		{45FB23BE-A7F9-4172-8868-B5E387007644} = {2A514C8F-6A53-41CA-AB41-B644E7BC92A7}
 		{D49A2D61-AEEB-457C-B3BA-D1322EB2F4EC} = {EE588CE5-51D0-4E98-A2B3-40EC8E655931}
-		{C05451A2-CC77-4BCC-BD15-9F6CB2FD2EC2} = {0BC0CC4E-A0F1-45E8-B41A-AE0FA76BF3E5}
-		{077541F6-22DC-4681-A330-46E652F46FAD} = {0BC0CC4E-A0F1-45E8-B41A-AE0FA76BF3E5}
-		{B4222224-6279-4047-9F5A-95637B24EB05} = {0BC0CC4E-A0F1-45E8-B41A-AE0FA76BF3E5}
-		{B5654737-8A3E-48AF-A8E1-BE461BAAEAF9} = {0BC0CC4E-A0F1-45E8-B41A-AE0FA76BF3E5}
-		{A7171FEC-FEC1-4AF0-9625-E69D93F08A42} = {6C40BE8B-71E6-4B9E-880D-48F91D0733C8}
-		{C5474352-0715-41C0-92C2-BABA1A4103A0} = {A7171FEC-FEC1-4AF0-9625-E69D93F08A42}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B3166EDE-037B-4C68-BEBA-5DE9C5E3DB82}
