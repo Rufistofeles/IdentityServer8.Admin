@@ -63,8 +63,8 @@
         ],
         "ApiScopes": [
             {
-                "Name": "identity_admin_api",
-                "DisplayName": "identity_admin_api",
+                "Name": "client_api",
+                "DisplayName": "client_api",
                 "Required": true,
                 "UserClaims": [
                     "role",
@@ -74,16 +74,16 @@
         ],
         "ApiResources": [
             {
-                "Name": "identity_admin_api",
+                "Name": "client_api",
                 "Scopes": [
-                    "identity_admin_api"
+                    "client_api"
                 ]
             }
         ],
         "Clients": [
             {
-                "ClientId": "identity_admin",
-                "ClientName": "identity_admin",
+                "ClientId": "client_api",
+                "ClientName": "client_api",
                 "ClientUri": "https://localhost:44303",
                 "AllowedGrantTypes": [
                     "authorization_code"
@@ -91,7 +91,7 @@
                 "RequirePkce": true,
                 "ClientSecrets": [
                     {
-                        "Value": "identity_admin_client_secret"
+                        "Value": "secret"
                     }
                 ],
                 "RedirectUris": [
@@ -112,8 +112,8 @@
                 ]
             },
             {
-                "ClientId": "identity_admin_api_swaggerui",
-                "ClientName": "identity_admin_api_swaggerui",
+                "ClientId": "client_api_swaggerui",
+                "ClientName": "client_api_swaggerui",
                 "AllowedGrantTypes": [
                     "authorization_code"
                 ],
@@ -123,7 +123,7 @@
                     "https://localhost:44302/swagger/oauth2-redirect.html"
                 ],
                 "AllowedScopes": [
-                    "identity_admin_api"
+                    "client_api"
                 ],
                 "AllowedCorsOrigins": [
                     "https://localhost:44302"
