@@ -6,9 +6,12 @@
 @{
 	Layout = "_LayoutLogin";
 }
+
 <div class="welcome-block px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
-    <h1 class="display-4"><img class="img-fluid" alt="Logo" src="@UrlHelper.Content(RootConfiguration.AdminConfiguration.HomePageLogoUri)"><br />@RootConfiguration.AdminConfiguration.PageTitle</h1>
-    <p class="lead">@Localizer["SubTitle", RootConfiguration.AdminConfiguration.PageTitle]</p>
+	<h4 class="display-4" style="font-size: 2.5rem;">
+		<img class="" alt="Logo" style="width: 30%" src="@UrlHelper.Content(RootConfiguration.AdminConfiguration.HomePageLogoUri)"><br />@RootConfiguration.AdminConfiguration.PageTitle
+	</h4>
+	<p class="lead">@Localizer["SubTitle", RootConfiguration.AdminConfiguration.PageTitle]</p>
 </div>
 
 <div class="card-deck mb-3 text-center">
