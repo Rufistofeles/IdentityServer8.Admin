@@ -1,4 +1,4 @@
-﻿{
+{
     "Serilog": {
         "MinimumLevel": {
             "Default": "Error",
@@ -13,7 +13,7 @@
             {
                 "Name": "File",
                 "Args": {
-                    "path": "Log/higginssoft_admin.txt",
+                    "path": "Log/sts.txt",
                     "rollingInterval": "Day"
                 }
             },

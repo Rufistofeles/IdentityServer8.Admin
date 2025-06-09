@@ -28,5 +28,11 @@ namespace IdentityServer8.STS.Identity.Configuration
         public string AzureInstance { get; set; }
         public string AzureAdCallbackPath { get; set; }
         public string AzureDomain { get; set; }
+        public bool UseAzureAdSaml2Provider { get; set; }
+        public string SamlLocalEntityId { get; set; }
+        public string SamlAzureEntityId { get; set; }
+        public string SamlModulePath { get; set; }
+        public string SamlMetadata { get; set; }
+        public string Certificate { get; set; }
     }
 }

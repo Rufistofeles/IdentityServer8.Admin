@@ -424,10 +424,9 @@ namespace IdentityServer8.STS.Identity.Controllers
             // If the user does not have an account, then ask the user to create an account.
             ViewData["ReturnUrl"] = returnUrl;
             ViewData["LoginProvider"] = info.LoginProvider;
-            var email = info.Principal.FindFirstValue(ClaimTypes.Email);
-            var userName = info.Principal.Identity.Name;
+            var email = info.Principal.FindFirstValue(ClaimTypes.Email);           
 
-            return View("ExternalLoginConfirmation", new ExternalLoginConfirmationViewModel { Email = email, UserName = userName });
+            return View("ExternalLoginConfirmation", new ExternalLoginConfirmationViewModel { Email = email, UserName = email });
         }
 
         [HttpPost]
@@ -447,7 +446,7 @@ namespace IdentityServer8.STS.Identity.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ExternalLoginConfirmation(ExternalLoginConfirmationViewModel model, string returnUrl = null)
         {
-            returnUrl = returnUrl ?? Url.Content("~/");
+            returnUrl ??= Url.Content("~/");
 
             // Get the information about the user from the external login provider
             var info = await _signInManager.GetExternalLoginInfoAsync();
@@ -458,25 +457,60 @@ namespace IdentityServer8.STS.Identity.Controllers
 
             if (ModelState.IsValid)
             {
-                var user = new TUser
-                {
-                    UserName = model.UserName,
-                    Email = model.Email
-                };
+                // Busca al usuario por email
+                var existingUser = await _userManager.FindByEmailAsync(model.Email);
+                IdentityResult result;
 
-                var result = await _userManager.CreateAsync(user);
-                if (result.Succeeded)
+                if (existingUser != null)
                 {
-                    result = await _userManager.AddLoginAsync(user, info);
+                    // El usuario ya existe, agregar solo el login externo
+                    result = await _userManager.AddLoginAsync(existingUser, info);
                     if (result.Succeeded)
                     {
-                        await _signInManager.SignInAsync(user, isPersistent: false);
-
+                        await _signInManager.SignInAsync(existingUser, isPersistent: false);
                         return RedirectToLocal(returnUrl);
                     }
                 }
+                else
+                {
+                    // Crear un nuevo usuario porque no existe
+                    var user = new TUser
+                    {
+                        UserName = model.UserName,
+                        Email = model.UserName
+                    };
 
-                AddErrors(result);
+                    result = await _userManager.CreateAsync(user);
+                    if (result.Succeeded)
+                    {
+                        result = await _userManager.AddLoginAsync(user, info);
+                        if (result.Succeeded)
+                        {
+                            await _signInManager.SignInAsync(user, isPersistent: false);
+                            return RedirectToLocal(returnUrl);
+                        }
+                    }
+                }
+
+                //var user = new TUser
+                //{
+                //    UserName = model.UserName,
+                //    Email = model.Email
+                //};
+
+                //var result = await _userManager.CreateAsync(user);
+                //if (result.Succeeded)
+                //{
+                //    result = await _userManager.AddLoginAsync(user, info);
+                //    if (result.Succeeded)
+                //    {
+                //        await _signInManager.SignInAsync(user, isPersistent: false);
+
+                //        return RedirectToLocal(returnUrl);
+                //    }
+                //}
+
+                //AddErrors(result);
             }
 
             ViewData["LoginProvider"] = info.LoginProvider;

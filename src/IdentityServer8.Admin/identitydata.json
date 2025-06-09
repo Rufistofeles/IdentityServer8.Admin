@@ -1,22 +1,26 @@
-﻿{
+{
   "IdentityData": {
     "Roles": [
       {
-        "Name": "SkorubaIdentityAdminAdministrator"
+        "Name": "SuperAdmin"
       }
     ],
     "Users": [
       {
-        "Username": "admin",
+        "Username": "rafael@domo.company",
         "Password": "Pa$$word123",
-        "Email": "admin@higginssoft.com",
+        "Email": "rafael@domo.company",
         "Roles": [
-          "SkorubaIdentityAdminAdministrator"
+          "SuperAdmin"
         ],
         "Claims": [
           {
             "Type": "name",
-            "Value": "admin"
+            "Value": "rafael@domo.company"
+          },
+          {
+            "Type": "email",
+            "Value": "rafael@domo.company"
           }
         ]
       }
